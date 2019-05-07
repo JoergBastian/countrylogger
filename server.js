@@ -10,15 +10,14 @@ const defaultLanguageCode = "de";
 
 router.get("/probe", ctx => ctx.status = 200); // Liveness / Readiness Probe
 
-router.post("/v1/events/address-update", ctx => {
+router.post("/v1/events/address-update", async ctx => {
     let event = ctx.request.body.event;
     if (event && event.address && event.address.id && event.address.country) {
         let originalCountryName = event.address.country;
-        getCanonicalCountryName(originalCountryName).then((canonicalCountryName) => {
-            if (canonicalCountryName !== originalCountryName) {
-                console.log(canonicalCountryName);
-            }
-        });
+        let canonicalCountryName = await getCanonicalCountryName(originalCountryName);
+        if (canonicalCountryName !== originalCountryName) {
+            console.log(canonicalCountryName);
+        }
         ctx.status = 200; // Success Status Code
         return;
     }
