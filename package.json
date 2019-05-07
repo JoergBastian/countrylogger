@@ -1,5 +1,5 @@
 {
-  "name": "countryname-normalizer",
+  "name": "countrylogger",
   "version": "1.0.0",
   "description": "Normalizes Country Names",
   "main": "server.js",
