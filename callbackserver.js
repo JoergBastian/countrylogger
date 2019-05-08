@@ -11,12 +11,12 @@ const defaultLanguageCode = "de";
 router.get("/probe", ctx => ctx.status = 200); // Liveness / Readiness Probe
 
 router.post("/v1/events/address-update", async ctx => {
-    let body = ctx.request.body;
-    if (body && body.address && body.address.id && body.address.countryName) {
-        let originalCountryName = body.address.countryName;
+    let event = ctx.request.body.event;
+    if (event && event.address && event.address.id && event.address.country) {
+        let originalCountryName = event.address.country;
         let canonicalCountryName = await getCanonicalCountryName(originalCountryName);
         if (canonicalCountryName !== originalCountryName) {
-            console.log(canonicalCountryName);
+            Request.put(`${process.env.GATEWAY_URL}/v1/address/${event.address.id}`, {json: true, body: {countryName: canonicalCountryName}});
         }
         ctx.status = 200; // Success Status Code
         return;
